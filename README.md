@@ -15,43 +15,34 @@ This module is part of our Infrastructure as Code (IaC) framework
 that enables our users and customers to easily deploy and manage reusable
 secure, and production-grade cloud infrastructure.
 
-- [Module Features](#module-features)
-- [Getting Started](#getting-started)
-- [Module Argument Reference](#module-argument-reference)
-  - [Top-level Arguments](#top-level-arguments)
-    - [Module Configuration](#module-configuration)
-    - [Main Resource Configuration](#main-resource-configuration)
-    - [Extended Resource Configuration](#extended-resource-configuration)
-- [Module Attributes Reference](#module-attributes-reference)
-- [External Documentation](#external-documentation)
-- [Module Versioning](#module-versioning)
-  - [Backwards compatibility in `0.0.z` and `0.y.z` version](#backwards-compatibility-in-00z-and-0yz-version)
-- [About Mineiros](#about-mineiros)
-- [Reporting Issues](#reporting-issues)
-- [Contributing](#contributing)
-- [Makefile Targets](#makefile-targets)
-- [License](#license)
+- [terraform-google-folder-iam](#terraform-google-folder-iam)
+  - [Module Features](#module-features)
+  - [Getting Started](#getting-started)
+  - [Module Argument Reference](#module-argument-reference)
+    - [Top-level Arguments](#top-level-arguments)
+      - [Module Configuration](#module-configuration)
+      - [Main Resource Configuration](#main-resource-configuration)
+      - [Extended Resource Configuration](#extended-resource-configuration)
+  - [Module Attributes Reference](#module-attributes-reference)
+  - [External Documentation](#external-documentation)
+    - [Google Documentation:](#google-documentation)
+    - [Terraform Google Provider Documentation:](#terraform-google-provider-documentation)
+  - [Module Versioning](#module-versioning)
+    - [Backwards compatibility in `0.0.z` and `0.y.z` version](#backwards-compatibility-in-00z-and-0yz-version)
+  - [About Mineiros](#about-mineiros)
+  - [Reporting Issues](#reporting-issues)
+  - [Contributing](#contributing)
+  - [Makefile Targets](#makefile-targets)
+  - [License](#license)
 
 ## Module Features
 
-A [Terraform] base module for creating a `terraform_google_folder_iam_*` resource. This module creates a google folder IAM with additional feature to either IAM binding or member and binds into a role depending on `authoritative` variable.
+This module implements the following terraform resources:
 
-<!--
-These are some of our custom features:
-- **Default Security Settings**:
-  secure by default by setting security to `true`, additional security can be added by setting some feature to `enabled`
-- **Standard Module Features**:
-  Cool Feature of the main resource, tags
-- **Extended Module Features**:
-  Awesome Extended Feature of an additional related resource,
-  and another Cool Feature
-- **Additional Features**:
-  a Cool Feature that is not actually a resource but a cool set up from us
-- _Features not yet implemented_:
-  Standard Features missing,
-  Extended Features planned,
-  Additional Features planned
--->
+- `google_folder_iam_binding`
+- `google_folder_iam_member`
+- `google_folder_iam_policy`
+- `google_iam_policy`
 
 ## Getting Started
 
@@ -60,6 +51,10 @@ Most basic usage just setting required arguments:
 ```hcl
 module "terraform-google-folder-iam" {
   source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.1.0"
+
+  folder = "my-folder"
+  role    = "roles/editor"
+  members = ["user:admin@example.com"]
 }
 ```
 
@@ -74,6 +69,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 - **`module_enabled`**: _(Optional `bool`)_
 
   Specifies whether resources in the module will be created.
+
   Default is `true`.
 
 - **`module_depends_on`**: _(Optional `list(dependencies)`)_
@@ -100,7 +96,12 @@ See [variables.tf] and [examples/] for details and use-cases.
 
 - **`members`**: _(Optional `set(string)`)_
 
-  Identities that will be added/set to/for the role. Each entry can have one of the following values: `allUsers`, `allAuthenticatedUsers`, `serviceAccount:{emailid}`, `group:{emailid}`, `domain:{domain}`.
+  Identities that will be granted the privilege in role. Each entry can have one of the following values:
+  - `user:{emailid}`: An email address that represents a specific Google account. For example, alice@gmail.com or joe@example.com.
+  - `serviceAccount:{emailid}`: An email address that represents a service account. For example, my-other-app@appspot.gserviceaccount.com.
+  - `group:{emailid}`: An email address that represents a Google group. For example, admins@example.com.
+  - `domain:{domain}`: A G Suite domain (primary, instead of alias) name that represents all the users of that domain. For example, google.com or example.com.
+
   Default is `[]`.
 
 - **`authoritative`**: _(Optional `bool`)_
@@ -136,6 +137,58 @@ See [variables.tf] and [examples/] for details and use-cases.
 
     An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
 
+- **`policy_bindings`**: _(Optional `list(policy_bindings)`)_
+
+  A list of IAM policy bindings.
+
+  Example
+
+  ```hcl
+  policy_bindings = [{
+    role    = "roles/viewer"
+    members = ["user:member@example.com"]
+  }]
+  ```
+
+  Each `policy_bindings` object accepts the following fields:
+
+  - **`role`**: **_(Required `string`)_**
+
+    The role that should be applied.
+
+  - **`members`**: **_(Required `string`)_**
+
+    Identities that will be granted the privilege in `role`.
+
+    Default is `var.members`.
+
+  - **`condition`**: _(Optional `object(condition)`)_
+
+    An IAM Condition for a given binding.
+
+    Example
+
+    ```hcl
+    condition = {
+      expression = "request.time < timestamp(\"2022-01-01T00:00:00Z\")"
+      title      = "expires_after_2021_12_31"
+    }
+    ```
+
+  A `condition` object accepts the following fields:
+
+  - **`expression`**: **_(Required `string`)_**
+
+    Textual representation of an expression in Common Expression Language syntax.
+
+  - **`title`**: **_(Required `string`)_**
+
+    A title for the expression, i.e. a short string describing its purpose.
+
+  - **`description`**: _(Optional `string`)_
+
+    An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
+
 #### Extended Resource Configuration
 
 ## Module Attributes Reference
@@ -148,15 +201,17 @@ The following attributes are exported in the outputs of the module:
 
 - **`iam`**
 
-  All attributes of the created `google_folder_iam_*` resource according to the mode.
+  All attributes of the created 'iam_binding' or 'iam_member' or 'iam_policy' resource according to the mode.
 
 ## External Documentation
 
-- Google Documentation:
-  - Folder IAM: https://cloud.google.com/resource-manager/docs/access-control-folders
+### Google Documentation:
 
-- Terraform Google Provider Documentation:
-  - https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_folder_iam
+- Folder IAM: <https://cloud.google.com/resource-manager/docs/access-control-folders>
+
+### Terraform Google Provider Documentation:
+
+- <https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_folder_iam>
 
 ## Module Versioning
 

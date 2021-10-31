@@ -90,7 +90,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   The resource name of the folder the policy is attached to. Its format is `folders/{folder_id}`.
 
-- **`role`**: **_(Required `string`)_**
+- **`role`**: _(Optional `string`)_
 
   The role that should be applied. Only one google_folder_iam_binding can be used per role. Note that custom roles must be of the format `organizations/{{org_id}}/roles/{{role_id}}`.
 

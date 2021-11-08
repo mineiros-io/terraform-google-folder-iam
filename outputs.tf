@@ -5,10 +5,19 @@
 # ------------------------------------------------------------------------------
 # OUTPUT ALL RESOURCES AS FULL OBJECTS
 # ------------------------------------------------------------------------------
+locals {
+  binding = try(google_folder_iam_binding.folder[0], null)
+  member  = try(google_folder_iam_member.folder, null)
+  policy  = try(google_folder_iam_policy.policy[0], null)
+
+  iam_output = [local.binding, local.member, local.policy]
+
+  iam_output_index = var.policy_bindings != null ? 2 : var.authoritative ? 0 : 1
+}
 
 output "iam" {
-  description = "All attributes of the created 'google_folder_iam_binding' or 'google_folder_iam_member' resource according to the mode."
-  value       = var.authoritative ? try(google_folder_iam_binding.folder[0], null) : try(google_folder_iam_member.folder, null)
+  description = "All attributes of the created 'iam_binding' or 'iam_member' or 'iam_policy' resource according to the mode."
+  value       = local.iam_output[local.iam_output_index]
 }
 
 # ------------------------------------------------------------------------------

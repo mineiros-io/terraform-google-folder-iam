@@ -6,13 +6,13 @@
 
 # terraform-google-folder-iam
 
-A [Terraform] module for [Google Folder IAM][google-folder-iam] on [Google Cloud Platform (GCP)][gcp].
+A [Terraform](https://www.terraform.io) module to create a [Google Folder IAM](https://cloud.google.com/resource-manager/docs/access-control-folders) on [Google Cloud Services (GCP)](https://cloud.google.com/).
 
 **_This module supports Terraform version 1
 and is compatible with the Terraform Google Provider version 3._**
 
 This module is part of our Infrastructure as Code (IaC) framework
-that enables our users and customers to easily deploy and manage reusable
+that enables our users and customers to easily deploy and manage reusable,
 secure, and production-grade cloud infrastructure.
 
 - [Module Features](#module-features)
@@ -34,24 +34,11 @@ secure, and production-grade cloud infrastructure.
 
 ## Module Features
 
-A [Terraform] base module for creating a `terraform_google_folder_iam_*` resource. This module creates a google folder IAM with additional feature to either IAM binding or member and binds into a role depending on `authoritative` variable.
+This module implements the following terraform resources:
 
-<!--
-These are some of our custom features:
-- **Default Security Settings**:
-  secure by default by setting security to `true`, additional security can be added by setting some feature to `enabled`
-- **Standard Module Features**:
-  Cool Feature of the main resource, tags
-- **Extended Module Features**:
-  Awesome Extended Feature of an additional related resource,
-  and another Cool Feature
-- **Additional Features**:
-  a Cool Feature that is not actually a resource but a cool set up from us
-- _Features not yet implemented_:
-  Standard Features missing,
-  Extended Features planned,
-  Additional Features planned
--->
+- `google_folder_iam_binding`
+- `google_folder_iam_member`
+- `google_folder_iam_policy`
 
 ## Getting Started
 
@@ -60,6 +47,10 @@ Most basic usage just setting required arguments:
 ```hcl
 module "terraform-google-folder-iam" {
   source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.1.0"
+
+  folder = "my-folder"
+  role    = "roles/editor"
+  members = ["user:admin@example.com"]
 }
 ```
 
@@ -74,6 +65,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 - **`module_enabled`**: _(Optional `bool`)_
 
   Specifies whether resources in the module will be created.
+
   Default is `true`.
 
 - **`module_depends_on`**: _(Optional `list(dependencies)`)_
@@ -94,47 +86,77 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   The resource name of the folder the policy is attached to. Its format is `folders/{folder_id}`.
 
-- **`role`**: **_(Required `string`)_**
+- **`role`**: _(Optional `string`)_
 
   The role that should be applied. Only one google_folder_iam_binding can be used per role. Note that custom roles must be of the format `organizations/{{org_id}}/roles/{{role_id}}`.
 
 - **`members`**: _(Optional `set(string)`)_
 
-  Identities that will be added/set to/for the role. Each entry can have one of the following values: `allUsers`, `allAuthenticatedUsers`, `serviceAccount:{emailid}`, `group:{emailid}`, `domain:{domain}`.
+  Identities that will be granted the privilege in role. Each entry can have one of the following values:
+  - `user:{emailid}`: An email address that represents a specific Google account. For example, alice@gmail.com or joe@example.com.
+  - `serviceAccount:{emailid}`: An email address that represents a service account. For example, my-other-app@appspot.gserviceaccount.com.
+  - `group:{emailid}`: An email address that represents a Google group. For example, admins@example.com.
+  - `domain:{domain}`: A G Suite domain (primary, instead of alias) name that represents all the users of that domain. For example, google.com or example.com.
+
   Default is `[]`.
 
 - **`authoritative`**: _(Optional `bool`)_
 
   Whether to exclusively set `(authoritative mode)` or add `(non-authoritative/additive mode)` members to the role.
-  Default is `false`.
+  
+  Default is `true`.
 
-- **`condition`**: _(Optional `object(condition)`)_
+- **`policy_bindings`**: _(Optional `list(policy_bindings)`)_
 
-  An IAM Condition for a given binding.
-
-  Each `condition` object can have the following fields:
+  A list of IAM policy bindings.
 
   Example
 
-   ```hcl
-   condition = {
-     title       = "expires_after_2019_12_31"
-     description = "Expiring at midnight of 2019-12-31"
-     expression  = "request.time < timestamp(\"2020-01-01T00:00:00Z\")""
-  }
-   ```
+  ```hcl
+  policy_bindings = [{
+    role    = "roles/viewer"
+    members = ["user:member@example.com"]
+  }]
+  ```
 
-  - **`title`**: **_(Required `string`)_**
+  Each `policy_bindings` object accepts the following fields:
 
-    A title for the expression, i.e. a short string describing its purpose.
+  - **`role`**: **_(Required `string`)_**
 
-  - **`expression`**: **_(Required `string`)_**
+    The role that should be applied.
 
-    Textual representation of an expression in Common Expression Language syntax.
+  - **`members`**: _(Optional `set(string)`)_
 
-  - **`description`**: _(Optional `string`)_
+    Identities that will be granted the privilege in `role`.
 
-    An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
+    Default is `var.members`.
+
+  - **`condition`**: _(Optional `object(condition)`)_
+
+    An IAM Condition for a given binding.
+
+    Example
+
+    ```hcl
+    condition = {
+      expression = "request.time < timestamp(\"2022-01-01T00:00:00Z\")"
+      title      = "expires_after_2021_12_31"
+    }
+    ```
+
+    A `condition` object accepts the following fields:
+
+    - **`expression`**: **_(Required `string`)_**
+
+      Textual representation of an expression in Common Expression Language syntax.
+
+    - **`title`**: **_(Required `string`)_**
+
+      A title for the expression, i.e. a short string describing its purpose.
+
+    - **`description`**: _(Optional `string`)_
+
+      An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
 
 #### Extended Resource Configuration
 
@@ -148,15 +170,17 @@ The following attributes are exported in the outputs of the module:
 
 - **`iam`**
 
-  All attributes of the created `google_folder_iam_*` resource according to the mode.
+  All attributes of the created 'iam_binding' or 'iam_member' or 'iam_policy' resource according to the mode.
 
 ## External Documentation
 
-- Google Documentation:
-  - Folder IAM: https://cloud.google.com/resource-manager/docs/access-control-folders
+### Google Documentation:
 
-- Terraform Google Provider Documentation:
-  - https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_folder_iam
+- Folder IAM: <https://cloud.google.com/resource-manager/docs/access-control-folders>
+
+### Terraform Google Provider Documentation:
+
+- <https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_folder_iam>
 
 ## Module Versioning
 

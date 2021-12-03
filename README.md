@@ -46,9 +46,9 @@ Most basic usage just setting required arguments:
 
 ```hcl
 module "terraform-google-folder-iam" {
-  source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.1.0"
+  source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.0.1"
 
-  folder = "my-folder"
+  folder  = "folders/1234567"
   role    = "roles/editor"
   members = ["user:admin@example.com"]
 }
@@ -103,7 +103,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 - **`authoritative`**: _(Optional `bool`)_
 
   Whether to exclusively set `(authoritative mode)` or add `(non-authoritative/additive mode)` members to the role.
-  
+
   Default is `true`.
 
 - **`policy_bindings`**: _(Optional `list(policy_bindings)`)_

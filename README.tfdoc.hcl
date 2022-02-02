@@ -147,8 +147,8 @@ section {
         }
 
         variable "policy_bindings" {
-          type        = list(policy_binding)
-          description = <<-END
+          type           = list(policy_binding)
+          description    = <<-END
             A list of IAM policy bindings.
           END
           readme_example = <<-END
@@ -218,15 +218,22 @@ section {
     title   = "Module Outputs"
     content = <<-END
       The following attributes are exported in the outputs of the module:
-
-      - **`module_enabled`**
-
-        Whether this module is enabled.
-
-      - **`iam`**
-
-        All attributes of the created 'iam_binding' or 'iam_member' or 'iam_policy' resource according to the mode.
     END
+
+    output "module_enabled" {
+      type        = bool
+      description = <<-END
+        Whether this module is enabled.
+      END
+    }
+
+    output "iam" {
+      type        = object(iam)
+      description = <<-END
+        All attributes of the created `iam_binding` or `iam_member` or
+        `iam_policy` resource according to the mode.
+      END
+    }
   }
 
   section {

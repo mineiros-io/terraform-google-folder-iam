@@ -50,7 +50,7 @@ Most basic usage just setting required arguments:
 
 ```hcl
 module "terraform-google-folder-iam" {
-  source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.0.1"
+  source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.0.3"
 
   folder  = "folders/1234567"
   role    = "roles/editor"

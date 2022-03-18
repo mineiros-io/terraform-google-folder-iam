@@ -231,9 +231,6 @@ section {
                         {
                             log_type = "ADMIN_READ"
                         },
-                        {
-                            log_type = "ADMIN_WRITE"
-                        },
                     ]
                 }
             ]
@@ -277,7 +274,7 @@ section {
               END
             }
 
-            attribute "exempted_users" {
+            attribute "exempted_members" {
               type        = set(string)
               description = <<-END
                 Identities that do not cause logging for this type of permission.

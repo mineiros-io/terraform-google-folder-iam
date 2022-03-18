@@ -169,12 +169,23 @@ See [variables.tf] and [examples/] for details and use-cases.
   Example:
 
   ```hcl
-  audit_configs = [{
-    service = "allServices"
-    configs = [{
-      log_type = "DATA_WRITE"
-    }]
-  }]
+  # Enable full audit log coverage for all services
+  audit_configs = [
+      {
+          service = "allServices"
+          configs = [
+              {
+                  log_type = "DATA_READ"
+              },
+              {
+                  log_type = "DATA_WRITE"
+              },
+              {
+                  log_type = "ADMIN_READ"
+              },
+          ]
+      }
+  ]
   ```
 
   The `audit_log` object accepts the following attributes:
@@ -211,7 +222,7 @@ See [variables.tf] and [examples/] for details and use-cases.
       Permission type for which logging is to be configured.
       Must be one of `DATA_READ`, `DATA_WRITE`, or `ADMIN_READ`.
 
-    - [**`exempted_users`**](#attr-audit_configs-audit_log_configs-exempted_users): *(Optional `set(string)`)*<a name="attr-audit_configs-audit_log_configs-exempted_users"></a>
+    - [**`exempted_members`**](#attr-audit_configs-audit_log_configs-exempted_members): *(Optional `set(string)`)*<a name="attr-audit_configs-audit_log_configs-exempted_members"></a>
 
       Identities that do not cause logging for this type of permission.
       The format is the same as that for `var.members`.

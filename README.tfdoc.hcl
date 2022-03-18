@@ -217,12 +217,26 @@ section {
             List of audit logs settings to be enabled.
           END
           readme_example = <<-END
-            audit_configs = [{
-              service = "allServices"
-              configs = [{
-                log_type = "DATA_WRITE"
-              }]
-            }]
+            # Enable full audit log coverage for all services
+            audit_configs = [
+                {
+                    service = "allServices"
+                    configs = [
+                        {
+                            log_type = "DATA_READ"
+                        },
+                        {
+                            log_type = "DATA_WRITE"
+                        },
+                        {
+                            log_type = "ADMIN_READ"
+                        },
+                        {
+                            log_type = "ADMIN_WRITE"
+                        },
+                    ]
+                }
+            ]
           END
 
           attribute "service" {

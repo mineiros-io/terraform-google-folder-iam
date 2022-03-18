@@ -1,3 +1,7 @@
+locals {
+  audit_configs_map = { for c in var.audit_configs : c.service => c }
+}
+
 resource "google_folder_iam_binding" "folder" {
   count = var.module_enabled && var.policy_bindings == null && var.authoritative ? 1 : 0
 
@@ -45,6 +49,23 @@ resource "google_folder_iam_policy" "policy" {
   policy_data = data.google_iam_policy.policy[0].policy_data
 
   depends_on = [var.module_depends_on]
+}
+
+resource "google_folder_iam_audit_config" "folder" {
+  for_each = var.module_enabled ? local.audit_configs_map : []
+
+  folder = var.folder
+
+  service = each.value.service
+
+  dynamic "audit_log_config" {
+    for_each = each.value.audit_log_configs
+
+    content {
+      log_type         = audit_log_config.value.log_type
+      exempted_members = try(audit_log_config.value.exempted_members, null)
+    }
+  }
 }
 
 data "google_iam_policy" "policy" {

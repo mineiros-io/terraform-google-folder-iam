@@ -52,7 +52,7 @@ resource "google_folder_iam_policy" "policy" {
 }
 
 resource "google_folder_iam_audit_config" "folder" {
-  for_each = var.module_enabled ? local.audit_configs_map : []
+  for_each = var.module_enabled ? local.audit_configs_map : {}
 
   folder = var.folder
 

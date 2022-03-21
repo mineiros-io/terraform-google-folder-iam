@@ -162,7 +162,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 
       An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
 
-- [**`audit_configs`**](#var-audit_configs): *(Optional `object(audit_log)`)*<a name="var-audit_configs"></a>
+- [**`audit_configs`**](#var-audit_configs): *(Optional `object(audit_config)`)*<a name="var-audit_configs"></a>
 
   List of audit logs settings to be enabled.
 
@@ -188,7 +188,7 @@ See [variables.tf] and [examples/] for details and use-cases.
   ]
   ```
 
-  The `audit_log` object accepts the following attributes:
+  The `audit_config` object accepts the following attributes:
 
   - [**`service`**](#attr-audit_configs-service): *(**Required** `string`)*<a name="attr-audit_configs-service"></a>
 

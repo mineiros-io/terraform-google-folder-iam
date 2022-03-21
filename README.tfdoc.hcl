@@ -212,7 +212,7 @@ section {
         }
 
         variable "audit_configs" {
-          type = object(audit_log)
+          type = object(audit_config)
           description    = <<-END
             List of audit logs settings to be enabled.
           END

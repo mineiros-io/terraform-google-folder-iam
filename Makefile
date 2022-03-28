@@ -105,7 +105,7 @@ test/unit-tests:
 ## Generate README.md with Terradoc
 .PHONY: terradoc
 terradoc:
-	$(call quiet-command,terradoc -o README.md README.tfdoc.hcl)
+	$(call quiet-command,terradoc generate -o README.md README.tfdoc.hcl)
 
 ## Clean up cache and temporary files
 .PHONY: clean

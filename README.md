@@ -162,6 +162,71 @@ See [variables.tf] and [examples/] for details and use-cases.
 
       An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
 
+- [**`audit_configs`**](#var-audit_configs): *(Optional `object(audit_config)`)*<a name="var-audit_configs"></a>
+
+  List of audit logs settings to be enabled.
+
+  Example:
+
+  ```hcl
+  # Enable full audit log coverage for all services
+  audit_configs = [
+      {
+          service = "allServices"
+          configs = [
+              {
+                  log_type = "DATA_READ"
+              },
+              {
+                  log_type = "DATA_WRITE"
+              },
+              {
+                  log_type = "ADMIN_READ"
+              },
+          ]
+      }
+  ]
+  ```
+
+  The `audit_config` object accepts the following attributes:
+
+  - [**`service`**](#attr-audit_configs-service): *(**Required** `string`)*<a name="attr-audit_configs-service"></a>
+
+    Service which will be enabled for audit logging.
+
+    The special value `allServices` covers all services.
+    Note that if there are `google_folder_iam_audit_config` resources covering both `allServices` and a specific service then the union of the two AuditConfigs is used for that service: the `log_types` specified in each `audit_log_config` are enabled, and the `exempted_members` in each `audit_log_config` are exempted.
+
+  - [**`audit_log_configs`**](#attr-audit_configs-audit_log_configs): *(**Required** `list(audit_log_config)`)*<a name="attr-audit_configs-audit_log_configs"></a>
+
+    A list of logging configurations for each type of permission.
+
+    Example:
+
+    ```hcl
+    audit_log_configs = [{
+      log_type = "ADMIN_READ"
+      exempted_members = [
+        "user:example@example.com"
+      ]
+    },
+    {
+      log_type = "DATA_WRITE"
+    }]
+    ```
+
+    Each `audit_log_config` object in the list accepts the following attributes:
+
+    - [**`log_type`**](#attr-audit_configs-audit_log_configs-log_type): *(**Required** `string`)*<a name="attr-audit_configs-audit_log_configs-log_type"></a>
+
+      Permission type for which logging is to be configured.
+      Must be one of `DATA_READ`, `DATA_WRITE`, or `ADMIN_READ`.
+
+    - [**`exempted_members`**](#attr-audit_configs-audit_log_configs-exempted_members): *(Optional `set(string)`)*<a name="attr-audit_configs-audit_log_configs-exempted_members"></a>
+
+      Identities that do not cause logging for this type of permission.
+      The format is the same as that for `var.members`.
+
 ## Module Outputs
 
 The following attributes are exported in the outputs of the module:
@@ -229,7 +294,7 @@ Run `make help` to see details on each available target.
 ## License
 
 [![license][badge-license]][apache20]
-      
+
 This module is licensed under the Apache License Version 2.0, January 2004.
 Please see [LICENSE] for full details.
 

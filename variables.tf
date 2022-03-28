@@ -48,6 +48,11 @@ variable "policy_bindings" {
   default     = null
 }
 
+variable "audit_configs" {
+  type        = any
+  description = "(Optional) A list of Audit Logs configurations."
+  default     = []
+}
 
 # ------------------------------------------------------------------------------
 # MODULE CONFIGURATION PARAMETERS

@@ -45,7 +45,7 @@ resource "google_folder_iam_member" "folder" {
 }
 
 resource "google_folder_iam_policy" "policy" {
-  count = var.module_enabled && local.create_policy != null ? 1 : 0
+  count = var.module_enabled && local.create_policy ? 1 : 0
 
   folder      = var.folder
   policy_data = data.google_iam_policy.policy[0].policy_data

@@ -77,14 +77,19 @@ If everything looks good, they will merge the code and release a new version whi
 
 <!-- References -->
 
-[pull requests]: https://github.com/mineiros-io/terraform-google-folder-iam/pulls
-[pre-commit-file]: https://github.com/mineiros-io/terraform-google-folder-iam/blob/main/.pre-commit-config.yaml
+<!-- markdown-link-check-disable -->
+
 [github flow]: https://guides.github.com/introduction/flow/
 [codeowners]: https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 [fork]: https://help.github.com/en/github/getting-started-with-github/fork-a-repo
-[create a new branch]: https://guides.github.com/introduction/flow/
-[readme driven development]: https://tom.preston-werner.com/2010/08/23/readme-driven-development.html
 [commit]: https://help.github.com/en/desktop/contributing-to-projects/committing-and-reviewing-changes-to-your-project
+[create a new branch]: https://guides.github.com/introduction/flow/
 [create a pull request]: https://help.github.com/articles/creating-a-pull-request/
+
+<!-- markdown-link-check-enable -->
+
+[pull requests]: https://github.com/mineiros-io/terraform-module-template/pulls
+[pre-commit-file]: https://github.com/mineiros-io/terraform-module-template/blob/main/.pre-commit-config.yaml
+[readme driven development]: https://tom.preston-werner.com/2010/08/23/readme-driven-development.html
 [semantic versioning (semver)]: https://semver.org/
 [test driven development]: https://en.wikipedia.org/wiki/Test-driven_development

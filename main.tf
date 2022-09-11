@@ -1,7 +1,8 @@
 locals {
-  create_binding = var.policy_bindings == null && var.role != null && var.authoritative
-  create_member  = var.policy_bindings == null && var.role != null && var.authoritative == false
   create_policy  = var.policy_bindings != null
+  create_binding = !local.create_policy && var.role != null && var.authoritative
+  create_member  = !local.create_policy && var.role != null && var.authoritative == false
+  create_audit   = !local.create_policy
 }
 
 resource "google_folder_iam_binding" "folder" {
@@ -74,6 +75,23 @@ data "google_iam_policy" "policy" {
       }
     }
   }
+
+  dynamic "audit_config" {
+    for_each = var.audit_configs
+
+    content {
+      service = audit_config.value.service
+
+      dynamic "audit_log_configs" {
+        for_each = audit_config.value.audit_log_configs
+
+        content {
+          log_type         = audit_log_configs.value.log_type
+          exempted_members = try(audit_log_configs.value.exempted_members, null)
+        }
+      }
+    }
+  }
 }
 
 locals {
@@ -81,7 +99,7 @@ locals {
 }
 
 resource "google_folder_iam_audit_config" "folder" {
-  for_each = var.module_enabled ? local.audit_configs_map : {}
+  for_each = var.module_enabled && local.create_audit ? local.audit_configs_map : {}
 
   folder = var.folder
 

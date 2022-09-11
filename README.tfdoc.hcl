@@ -275,7 +275,10 @@ section {
               Service which will be enabled for audit logging.
 
               The special value `allServices` covers all services.
-              Note that if there are `google_folder_iam_audit_config` resources covering both `allServices` and a specific service then the union of the two AuditConfigs is used for that service: the `log_types` specified in each `audit_log_config` are enabled, and the `exempted_members` in each `audit_log_config` are exempted.
+              Note that if there are `audit_configs` covering both `allServices` and a specific service
+              then the union of the two `audit_configs` is used for that service:
+              the `log_types` specified in each `audit_log_config` are enabled,
+              and the `exempted_members` in each `audit_log_config` are exempted.
             END
           }
 

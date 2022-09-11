@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for audit logs when using `policy_bindings`
+
 ## [0.1.0]
 
 ### Fixed
 
-- Fix error when policy_bindings is `null` thanks to @mscifo
+- Fix error when `policy_bindings` is `null` thanks to @mscifo
 
 ### Added
 

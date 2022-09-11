@@ -65,7 +65,7 @@ section {
 
       ```hcl
       module "terraform-google-folder-iam" {
-        source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.1.0"
+        source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.2.0"
 
         folder  = "folders/1234567"
         role    = "roles/editor"

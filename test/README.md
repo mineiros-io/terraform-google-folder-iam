@@ -98,12 +98,12 @@ Alternatively, you can also run the tests without Docker.
 
 <!-- References -->
 
-[makefile]: https://github.com/mineiros-io/terraform-module-template/blob/main/Makefile
-[testdirectory]: https://github.com/mineiros-io/terraform-module-template/tree/main/test
-[unit-disabled]: https://github.com/mineiros-io/terraform-module-template/blob/main/test/unit-disabled/main.tf
-[unit-minimal]: https://github.com/mineiros-io/terraform-module-template/blob/main/test/unit-minimal/main.tf
-[unit-complete]: https://github.com/mineiros-io/terraform-module-template/blob/main/test/unit-complete/main.tf
-[homepage]: https://mineiros.io/?ref=terraform-module-template
+[makefile]: https://github.com/mineiros-io/terraform-google-folder-iam/blob/main/Makefile
+[testdirectory]: https://github.com/mineiros-io/terraform-google-folder-iam/tree/main/test
+[unit-disabled]: https://github.com/mineiros-io/terraform-google-folder-iam/blob/main/test/unit-disabled/main.tf
+[unit-minimal]: https://github.com/mineiros-io/terraform-google-folder-iam/blob/main/test/unit-minimal/main.tf
+[unit-complete]: https://github.com/mineiros-io/terraform-google-folder-iam/blob/main/test/unit-complete/main.tf
+[homepage]: https://mineiros.io/?ref=terraform-google-folder-iam
 [terratest]: https://github.com/gruntwork-io/terratest
 [package testing]: https://golang.org/pkg/testing/
 [docker]: https://docs.docker.com/get-started/

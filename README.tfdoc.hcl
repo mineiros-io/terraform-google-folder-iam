@@ -146,6 +146,38 @@ section {
           END
         }
 
+        variable "condition" {
+          type        = object(condition)
+          description = <<-END
+            An IAM Condition for a given binding.
+          END
+
+          attribute "expression" {
+            type        = string
+            required    = true
+            description = <<-END
+              Textual representation of an expression in Common Expression Language syntax.
+            END
+
+          }
+
+          attribute "title" {
+            type        = string
+            required    = true
+            description = <<-END
+              A title for the expression, i.e. a short string describing its purpose.
+            END
+
+          }
+
+          attribute "description" {
+            type        = string
+            description = <<-END
+              An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
+            END
+          }
+        }
+
         variable "policy_bindings" {
           type           = list(policy_binding)
           description    = <<-END

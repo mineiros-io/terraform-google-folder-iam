@@ -1,3 +1,11 @@
+module "test-sa" {
+  source = "github.com/mineiros-io/terraform-google-service-account?ref=v0.0.10"
+
+  project = local.project_id
+
+  account_id = "service-account-id-${local.random_suffix}"
+}
+
 module "test" {
   source = "../.."
 
@@ -10,7 +18,11 @@ module "test" {
   role = "roles/viewer"
   members = [
     "domain:example.com",
+    "computed:myserviceaccount",
   ]
+  computed_members_map = {
+    myserviceaccount = "serviceAccount:${module.test-sa.service_account.email}"
+  }
 }
 
 module "test-policy-audit" {
@@ -26,8 +38,11 @@ module "test-policy-audit" {
     {
       role = "roles/viewer"
       members = [
-        "domain:example.com",
+        "computed:myserviceaccount",
       ]
+      computed_members_map = {
+        myserviceaccount = "serviceAccount:${module.test-sa.service_account.email}"
+      }
     }
   ]
 

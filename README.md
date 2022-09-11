@@ -101,8 +101,23 @@ See [variables.tf] and [examples/] for details and use-cases.
   - `serviceAccount:{emailid}`: An email address that represents a service account. For example, my-other-app@appspot.gserviceaccount.com.
   - `group:{emailid}`: An email address that represents a Google group. For example, admins@example.com.
   - `domain:{domain}`: A G Suite domain (primary, instead of alias) name that represents all the users of that domain. For example, google.com or example.com.
+  - `computed:{identifier}`: An existing key from var.computed_members_map.
 
   Default is `[]`.
+
+- [**`computed_members_map`**](#var-computed_members_map): *(Optional `map(string)`)*<a name="var-computed_members_map"></a>
+
+  A map of members to replace in `var.members` or in members of `var.policy_bindings` to handle terraform computed values.
+
+  Default is `{}`.
+
+  Example:
+
+  ```hcl
+  computed_members_map = {
+    myserviceaccount = "serviceAccount:example@mail.com"
+  }
+  ```
 
 - [**`authoritative`**](#var-authoritative): *(Optional `bool`)*<a name="var-authoritative"></a>
 

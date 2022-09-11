@@ -13,7 +13,7 @@ resource "google_folder_iam_binding" "folder" {
   folder = var.folder
   role   = var.role
 
-  members = var.members
+  members = [for m in var.members : try(var.computed_members_map[regex("^computed:(.*)", m)[0]], m)]
 
   dynamic "condition" {
     for_each = var.condition != null ? ["condition"] : []
@@ -32,7 +32,7 @@ resource "google_folder_iam_member" "folder" {
   folder = var.folder
   role   = var.role
 
-  member = each.value
+  member = try(var.computed_members_map[regex("^computed:(.*)", each.value)[0]], each.value)
 
   dynamic "condition" {
     for_each = var.condition != null ? ["condition"] : []
@@ -62,7 +62,7 @@ data "google_iam_policy" "policy" {
 
     content {
       role    = binding.value.role
-      members = try(binding.value.members, var.members)
+      members = [for m in binding.value.members : try(var.computed_members_map[regex("^computed:(.*)", m)[0]], m)]
 
       dynamic "condition" {
         for_each = try([binding.value.condition], [])

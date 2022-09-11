@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add support for audit logs when using `policy_bindings`
+- Add support for `computed_members` variable
+
+### Removed
+
+- BREAKING CHANGES: Remove fall back to var.members in policy bindings
 
 ## [0.1.0]
 

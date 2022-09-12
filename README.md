@@ -50,7 +50,7 @@ Most basic usage just setting required arguments:
 
 ```hcl
 module "terraform-google-folder-iam" {
-  source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.1.0"
+  source = "github.com/mineiros-io/terraform-google-folder-iam.git?ref=v0.2.0"
 
   folder  = "folders/1234567"
   role    = "roles/editor"
@@ -101,14 +101,47 @@ See [variables.tf] and [examples/] for details and use-cases.
   - `serviceAccount:{emailid}`: An email address that represents a service account. For example, my-other-app@appspot.gserviceaccount.com.
   - `group:{emailid}`: An email address that represents a Google group. For example, admins@example.com.
   - `domain:{domain}`: A G Suite domain (primary, instead of alias) name that represents all the users of that domain. For example, google.com or example.com.
+  - `computed:{identifier}`: An existing key from var.computed_members_map.
 
   Default is `[]`.
+
+- [**`computed_members_map`**](#var-computed_members_map): *(Optional `map(string)`)*<a name="var-computed_members_map"></a>
+
+  A map of members to replace in `var.members` or in members of `var.policy_bindings` to handle terraform computed values.
+
+  Default is `{}`.
+
+  Example:
+
+  ```hcl
+  computed_members_map = {
+    myserviceaccount = "serviceAccount:example@mail.com"
+  }
+  ```
 
 - [**`authoritative`**](#var-authoritative): *(Optional `bool`)*<a name="var-authoritative"></a>
 
   Whether to exclusively set `(authoritative mode)` or add `(non-authoritative/additive mode)` members to the role.
 
   Default is `true`.
+
+- [**`condition`**](#var-condition): *(Optional `object(condition)`)*<a name="var-condition"></a>
+
+  An IAM Condition for a given binding.
+
+  The `condition` object accepts the following attributes:
+
+  - [**`expression`**](#attr-condition-expression): *(**Required** `string`)*<a name="attr-condition-expression"></a>
+
+    Textual representation of an expression in Common Expression Language syntax.
+
+  - [**`title`**](#attr-condition-title): *(**Required** `string`)*<a name="attr-condition-title"></a>
+
+    A title for the expression, i.e. a short string describing its purpose.
+
+  - [**`description`**](#attr-condition-description): *(Optional `string`)*<a name="attr-condition-description"></a>
+
+    An optional description of the expression. This is a longer text which describes the expression, e.g. when hovered over it in a UI.
 
 - [**`policy_bindings`**](#var-policy_bindings): *(Optional `list(policy_binding)`)*<a name="var-policy_bindings"></a>
 
@@ -195,7 +228,10 @@ See [variables.tf] and [examples/] for details and use-cases.
     Service which will be enabled for audit logging.
 
     The special value `allServices` covers all services.
-    Note that if there are `google_folder_iam_audit_config` resources covering both `allServices` and a specific service then the union of the two AuditConfigs is used for that service: the `log_types` specified in each `audit_log_config` are enabled, and the `exempted_members` in each `audit_log_config` are exempted.
+    Note that if there are `audit_configs` covering both `allServices` and a specific service
+    then the union of the two `audit_configs` is used for that service:
+    the `log_types` specified in each `audit_log_config` are enabled,
+    and the `exempted_members` in each `audit_log_config` are exempted.
 
   - [**`audit_log_configs`**](#attr-audit_configs-audit_log_configs): *(**Required** `list(audit_log_config)`)*<a name="attr-audit_configs-audit_log_configs"></a>
 

@@ -3,7 +3,7 @@ vendor {
     default {
       files = [
         "/*.tf",
-        "/README.*",
+        "/README.md",
         "/LICENSE",
       ]
     }
